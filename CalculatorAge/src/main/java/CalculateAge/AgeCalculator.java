@@ -1,23 +1,23 @@
 package CalculateAge;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class AgeCalculator {
-    public static int calculateAgeInDays(String birthdate) {
-        // Kreiranje formatera za unos datuma u formatu "yyyy-MM-dd"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public int calculateAgeInDays(String birthdate) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateOfBirth = dateFormat.parse(birthdate);
+            Date currentDate = new Date();
 
-        // Parsiranje datuma rođenja
-        LocalDate birthDate = LocalDate.parse(birthdate, formatter);
+            long differenceInMilliseconds = currentDate.getTime() - dateOfBirth.getTime();
+            long differenceInDays = TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);
 
-        // Dobijanje trenutnog datuma
-        LocalDate currentDate = LocalDate.now();
-
-        // Izračunavanje razlike između datuma rođenja i trenutnog datuma
-        Period period = Period.between(birthDate, currentDate);
-
-        // Dobijanje broja dana iz Period objekta
-        return period.getDays();
+            return (int) differenceInDays;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return -1; // Return -1 in case of a parsing error.
+        }
     }
 }
